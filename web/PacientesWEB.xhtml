@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <f:event type="preRenderView" listener="#{pacientesBean.listar()}" />
+
+
+        <p:growl id="msj" autoUpdate="true"/>
+        <h:form id="frm">
+
+            <p:commandButton value="Nuevo" oncomplete="PF('wdlgDatos').show();" actionListener="#{pacientesBean.setAccion('Registrar')}" update=":dlgDatos"/>
+
+            <p:commandButton value="Listar" actionListener="#{pacientesBean.listar()}" update="data"/>
+
+            <p:button outcome="index" value="Salir" icon="ui-icon-exit">
+                <f:param name="productId" value="50" />
+            </p:button>
+
+            <p:dataTable id="data" value="#{pacientesBean.lstPacientes}" var="pacientes" rows="10"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <f:facet name="header">
+                    <h1>PACIENTES</h1> 
+                    <p:commandButton id="toggler" type="button" value="Columnas" style="float:right" icon="ui-icon-calculator" />
+                    <p:columnToggler datasource="data" trigger="toggler" />
+                </f:facet>
+                <p:column headerText="Nombres" >
+                    <p:outputLabel value="#{pacientes.NOMPAC}"/>
+                </p:column>
+                <p:column headerText="Apellidos" >
+                    <p:outputLabel value="#{pacientes.APEPAC}"/>
+                </p:column>
+                <p:column headerText="Sexo" >
+                    <p:outputLabel value="#{pacientes.SEXPAC}"/>
+                </p:column>
+                <p:column headerText="DNI" >
+                    <p:outputLabel value="#{pacientes.DNIPAC}"/>
+                </p:column>
+                <p:column headerText="Fecha de Nacimiento" >
+                    <p:outputLabel value="#{pacientes.FNPAC}"/>
+                </p:column>
+                <p:column headerText="Direccion" >
+                    <p:outputLabel value="#{pacientes.DIRPAC}"/>
+                </p:column>
+                <p:column headerText="Ubigeo" >
+                    <p:outputLabel value="#{pacientes.UBIPAC}"/>
+                </p:column>
+                                <p:column headerText="Modificar" >
+                    <p:commandButton  icon="ui-icon-pencil" actionListener="#{pacientesBean.leerID(pacientes)}" oncomplete="PF('wdlgDatos').show();" update=":dlgDatos" />
+                </p:column>
+                <p:column headerText="Eliminar" >
+                    <p:growl id="message" showDetail="true" />
+
+                    <p:commandButton icon="ui-icon-circle-close" actionListener="#{pacientesBean.eliminar(pacientes)}" update="data" style="background-color:red;color:red;">
+                        <p:confirm header="Confirmation" message="¿Deseas Eliminar? " icon="ui-icon-alert" />
+                    </p:commandButton>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <p:dialog showEffect="explode" modal="true" hideEffect="explode" header="Datos" widgetVar="wdlgDatos" id="dlgDatos">
+            <h:form>
+                <p:panelGrid columns="2">
+                <p:outputLabel value="Nombre:" />
+                <p:inputText value="#{pacientesBean.pacientes.NOMPAC}" />
+
+                <p:outputLabel value="Apellido:" />
+                <p:inputText value="#{pacientesBean.pacientes.APEPAC}" />
+
+                <p:outputLabel value="Sexo:" />
+                <p:inputText value="#{pacientesBean.pacientes.SEXPAC}" />
+                
+                <p:outputLabel value="DNI:" />
+                <p:inputText value="#{pacientesBean.pacientes.DNIPAC}" />
+                
+                <p:outputLabel value="Fecha de Nacimiento:" />
+                <p:inputText value="#{pacientesBean.pacientes.FNPAC}" />
+                
+                <p:outputLabel value="Direccion:" />
+                <p:inputText value="#{pacientesBean.pacientes.DIRPAC}" />
+                
+                <p:outputLabel value="Ubigeo:" />
+                <p:inputText value="#{pacientesBean.pacientes.UBIPAC}" />
+
+                <p:commandButton value="#{pacientesBean.accion}" actionListener="#{pacientesBean.operar()}" oncomplete="PF('wdlgDatos').hide();" update=":frm:data"/>
+                <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                </p:panelGrid>
+            </h:form>
+
+        </p:dialog>
+    </h:body>
+</html>
+
